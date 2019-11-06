@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{13700f59-d9ef-4a27-9140-ef50bd8935ef}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MatLabFile.cpp" />
+    <ClCompile Include="MatLabVariable.cpp" />
+    <ClCompile Include="pc.h">
+      <Filter>Headers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MatLabFile.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MatLabVariable.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Exports.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
