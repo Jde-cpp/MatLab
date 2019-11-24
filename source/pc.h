@@ -1,5 +1,3 @@
-#pragma once
-
 #pragma warning(push)
 #pragma warning( disable : 4245) 
 #pragma warning( disable : 4701)
@@ -12,7 +10,7 @@
 	#include <spdlog/sinks/basic_file_sink.h>
 	#include <spdlog/fmt/ostr.h>
 #endif
-#include "../../framework/source/log/Logging.h"
-#include "../../framework/source/StringUtilities.h"
-#include "../../framework/source/io/File.h"
+#include "../../Framework/source/log/Logging.h"
+#include "../../Framework/source/StringUtilities.h"
+#include "../../Framework/source/io/File.h"
 

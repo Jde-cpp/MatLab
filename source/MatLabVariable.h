@@ -5,9 +5,9 @@
 #pragma warning(default :4127)
 #include <matio.h>
 #include "Exports.h"
-#include "../../framework/source/TypeDefs.h"
-#include "../../framework/source/Exception.h"
-#include "../../framework/source/Stopwatch.h"
+#include "../../Framework/source/TypeDefs.h"
+#include "../../Framework/source/Exception.h"
+#include "../../Framework/source/Stopwatch.h"
 
 //struct matvar_t;
 namespace Jde::IO::MatLab
