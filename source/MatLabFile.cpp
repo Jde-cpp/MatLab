@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "MatLabFile.h"
 #include <array>
 //#include <boost/format.hpp>
@@ -91,7 +90,7 @@ namespace Jde::IO::MatLab
 		
 		pCombined->nir = pCombined->ndata = pCombined->nzmax = pSparse1->nzmax+pSparse2->nzmax;
 		
-		int* pRowIndexes = static_cast<int*>( calloc( pCombined->nir,sizeof(int)) );
+		mat_uint32_t* pRowIndexes = static_cast<mat_uint32_t*>( calloc( pCombined->nir,sizeof(mat_uint32_t)) );
 		DBG( "pRowIndexes:  {:x}.  size:  {}", (size_t)pRowIndexes, pCombined->nir*sizeof(int) );
 		if( pRowIndexes==nullptr )
 			THROW( Exception("out of memory") );
@@ -107,15 +106,15 @@ namespace Jde::IO::MatLab
 		//const auto columnCount1 = pSparse1->njc-1;
 		const auto columnCount = pSparse1->njc-1 + pSparse2->njc-1;
 		pCombined->njc = columnCount+1;
-		int* jc = static_cast<int*>( calloc(columnCount+1, sizeof(int)) );
-		for( auto jcIndex=1; jcIndex<pSparse1->njc; ++jcIndex )
+		mat_uint32_t* jc = static_cast<mat_uint32_t*>( calloc(columnCount+1, sizeof(mat_uint32_t)) );
+		for( uint jcIndex=1; jcIndex<pSparse1->njc; ++jcIndex )
 		{
 			jc[jcIndex] = pSparse1->jc[jcIndex];
 			DBG( "jcIndex:  {} ({});  difference:  {}", jcIndex, jc[jcIndex], jc[jcIndex]-jc[jcIndex-1] );	
 		}
 
 		const auto startIndexCount=jc[pSparse1->njc-1];
-		for( auto jcIndex=1; jcIndex<pSparse2->njc; ++jcIndex )
+		for( uint jcIndex=1; jcIndex<pSparse2->njc; ++jcIndex )
 		{
 			jc[pSparse1->njc+jcIndex-1] = startIndexCount+pSparse2->jc[jcIndex];
 			DBG( "jcIndex:  {} ({});  difference:  {}", pSparse1->njc+jcIndex-1, jc[pSparse1->njc+jcIndex-1], jc[pSparse1->njc+jcIndex-1]-jc[pSparse1->njc+jcIndex-2] );

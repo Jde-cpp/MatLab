@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "MatLabVariable.h"
 #include <array>
 //#include <boost/locale.hpp>
@@ -189,7 +188,7 @@ namespace Jde::IO::MatLab
 		{
 			const mat_sparse_t* sparse =  GetSparsePointer();
 			size_t startIndex=0;
-			for( auto jcIndex=1; jcIndex<sparse->njc; ++jcIndex )
+			for( mat_uint32_t jcIndex=1; jcIndex<sparse->njc; ++jcIndex )
 			{
 				const auto currentIndex = sparse->jc[jcIndex];
 				std::pair<size_t,size_t> value = make_pair( currentIndex-startIndex,startIndex );

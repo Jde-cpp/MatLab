@@ -8,9 +8,7 @@
   <ItemGroup>
     <ClCompile Include="MatLabFile.cpp" />
     <ClCompile Include="MatLabVariable.cpp" />
-    <ClCompile Include="pc.h">
-      <Filter>Headers</Filter>
-    </ClCompile>
+    <ClCompile Include="pc.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MatLabFile.h">
