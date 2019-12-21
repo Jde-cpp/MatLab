@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "MatLabFile.h"
 #include <array>
 //#include <boost/format.hpp>

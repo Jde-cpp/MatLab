@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "MatLabVariable.h"
 #include <array>
 //#include <boost/locale.hpp>

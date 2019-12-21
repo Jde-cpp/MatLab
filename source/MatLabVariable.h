@@ -25,7 +25,7 @@ namespace Jde::IO::MatLab
 		JDE_MATLAB_VISIBILITY MatLabVariable( matvar_t* variable );
 		JDE_MATLAB_VISIBILITY MatLabVariable( const MatLabVariable& copyFrom );
 		JDE_MATLAB_VISIBILITY ~MatLabVariable();
-	
+
 		//JDE_MATLAB_VISIBILITY sp<Eigen::MatrixXd> ToMatrix()const noexcept(false);
 		//JDE_MATLAB_VISIBILITY sp<Eigen::VectorXd> ToVector()const noexcept(false);
 
@@ -61,10 +61,10 @@ namespace Jde::IO::MatLab
 		const matvar_t* GetVariable()const{ assert(_pVariable!=nullptr); return _pVariable;}
 
 		JDE_MATLAB_VISIBILITY const std::vector<std::pair<size_t,size_t>> ColumnCounts()const noexcept(false);
-		
+
 		JDE_MATLAB_VISIBILITY const mat_sparse_t* GetSparsePointer()const noexcept(false);
 
-		
+
 		template<typename ScalerFrom, typename ScalerTo>
 		void ForEachValue( std::function<void( size_t rowIndex,size_t columnIndex, ScalerTo value )> func, Stopwatch* sw  )const noexcept(false);
 	private:
@@ -88,20 +88,16 @@ namespace Jde::IO::MatLab
 	{
 		const size_t rowCount = matrix.rows();
 		const size_t columnCount = matrix.cols();
-		size_t* dims = static_cast<size_t*>( malloc( 2*sizeof(size_t)) ); 
+		size_t* dims = static_cast<size_t*>( malloc( 2*sizeof(size_t)) );
 		dims[0] = rowCount;
 		dims[1] = columnCount;
 		DBG( "rowCount={}, columnCount={}", rowCount, columnCount );
-		//std::clog << "rowCount="<< rowCount << ".  columnCount=" << columnCount << "." << std::endl;
-		//clog << "calloc("<< rowCount*columnCount << ", " << sizeof(T) << ")." << std::endl;
-		T* values = static_cast<T*>( calloc(rowCount*columnCount, sizeof(T)) ); 
-		for( uint rowIndex=0; rowIndex<rowCount; ++rowIndex )
+		T* values = static_cast<T*>( calloc(rowCount*columnCount, sizeof(T)) );
+		//matlab file is column major & eigen defaults to column major
+		for( uint columnIndex=0; columnIndex<columnCount; ++columnIndex )
 		{
-			for( uint columnIndex=0; columnIndex<columnCount; ++columnIndex )
-			{
-				values[rowIndex*columnCount+columnIndex] = matrix(rowIndex, columnIndex);
-				////clog << "[" << rowIndex*columnCount+columnIndex << "] = " << values[rowIndex*columnCount+columnIndex] << std::endl;
-			}
+			for( uint rowIndex=0; rowIndex<rowCount; ++rowIndex )
+				values[columnIndex*rowCount+rowIndex] = matrix(rowIndex, columnIndex);
 		}
 		matvar_t* pVariable = Mat_VarCreate( string(pszVariableName).c_str(), GetMatioClass(typeid(T)),GetMatioType(typeid(T)),2,dims,values,0 );
 		Mat_VarWrite( pFile, pVariable, MAT_COMPRESSION_ZLIB/*MAT_COMPRESSION_NONE*/ );
@@ -140,7 +136,7 @@ namespace Jde::IO::MatLab
 		sparse_data->njc = columnCount+1;
 		sparse_data->data = values;
 
-		size_t* dims = static_cast<size_t*>( malloc( 2*sizeof(size_t)) ); 
+		size_t* dims = static_cast<size_t*>( malloc( 2*sizeof(size_t)) );
 		dims[0] = sparse.rows();
 		dims[1] = columnCount;
 		auto pVariable = Mat_VarCreate( string(variableName).c_str(), MAT_C_SPARSE,GetMatioType( typeid(T) ),2,dims,static_cast<void*>(sparse_data), MAT_F_DONT_COPY_DATA );
@@ -207,7 +203,7 @@ namespace Jde::IO::MatLab
 		sparse_data->njc = static_cast<int>( columnCount+1 );
 		sparse_data->data = values;
 
-		size_t* dims = static_cast<size_t*>( malloc( 2*sizeof(size_t)) ); 
+		size_t* dims = static_cast<size_t*>( malloc( 2*sizeof(size_t)) );
 		dims[0] = sparse.rows();
 		dims[1] = columnCount;
 		auto pVariable = Mat_VarCreate( string(variableName).c_str(), MAT_C_SPARSE,GetMatioType( typeid(T) ),2,dims,static_cast<void*>(sparse_data), MAT_F_DONT_COPY_DATA );
@@ -217,7 +213,7 @@ namespace Jde::IO::MatLab
 		//Logging::ProcessInfo::LogMemoryUsage( wstring("before Mat_VarFree") );
 		//pVariable->mem_conserve = 0;
 		{
-			mat_sparse_t *sparse2 = static_cast<mat_sparse_t*>(pVariable->data); 
+			mat_sparse_t *sparse2 = static_cast<mat_sparse_t*>(pVariable->data);
 			if ( sparse2->ir != NULL )
 				free(sparse2->ir);
 			if ( sparse2->jc != NULL )
@@ -260,7 +256,7 @@ namespace Jde::IO::MatLab
 			THROW( Exception("class_type!=MAT_C_SPARSE") );
 
 		const mat_sparse_t* sparse =  GetSparsePointer();
-		std::ostringstream os; 
+		std::ostringstream os;
 		const auto columnCount = sparse->njc-1;
 		const auto fileRowCount= int(pVariable->dims[0]);
 		const auto rowCount= std::min<size_t>( fileRowCount, maxRowCount );
@@ -312,7 +308,7 @@ namespace Jde::IO::MatLab
 					sw.Progress( dataIndex, sparse->nir );
 			}
 		}
-		
+
 		return std::unique_ptr<Result>( matrix );
 	}
 #pragma endregion
@@ -342,13 +338,13 @@ namespace Jde::IO::MatLab
 		{
 			auto pVariable = GetVariable();
 			const size_t dims =  pVariable->dims[2];
-			const size_t rowCount =  rows(); 
+			const size_t rowCount =  rows();
 			const size_t columnCount =  cols();
 			const size_t stride = Mat_SizeOf( _pVariable->data_type );
 			const char* pData = static_cast<const char*>( pVariable->data );
-			for( size_t rowIndex = 0; rowIndex < rowCount; ++rowIndex ) 
+			for( size_t rowIndex = 0; rowIndex < rowCount; ++rowIndex )
 			{
-				for ( size_t columnIndex = 0; columnIndex < columnCount; ++columnIndex ) 
+				for ( size_t columnIndex = 0; columnIndex < columnCount; ++columnIndex )
 				{
 					const size_t index = rowCount*columnIndex+rowIndex;
 					ScalerFrom* value = (ScalerFrom*)( pData+index*stride );
@@ -371,12 +367,12 @@ namespace Jde::IO::MatLab
 	//	if(  _pVariable->class_type!=MAT_C_DOUBLE )
 	//		throw Exception( "class_type!=MAT_C_DOUBLE" );
 
-		const uint rowCount =  _pVariable->dims[0]; 
+		const uint rowCount =  _pVariable->dims[0];
 		const uint columnCount =  _pVariable->dims[1];
 		auto pMatrix = new Eigen::Matrix<T,Rows,Cols>( rowCount, columnCount );
-		for( uint i = 0; i < rowCount; ++i ) 
+		for( uint i = 0; i < rowCount; ++i )
 		{
-			for ( uint j = 0; j < columnCount; ++j ) 
+			for ( uint j = 0; j < columnCount; ++j )
 			{
 				const auto index = rowCount*j+i;
 				const char* data = static_cast<const char*>(_pVariable->data);
@@ -399,7 +395,7 @@ namespace Jde::IO::MatLab
 		if( _pVariable->class_type!=MAT_C_DOUBLE )
 			throw Exception( "class_type!=MAT_C_DOUBLE" );
 
-		const size_t rowCount =  _pVariable->dims[0]; 
+		const size_t rowCount =  _pVariable->dims[0];
 		const size_t columnCount =  _pVariable->dims[1];
 		const size_t dims =  _pVariable->dims[2];
 		const char* data = static_cast<const char*>(_pVariable->data);
@@ -408,9 +404,9 @@ namespace Jde::IO::MatLab
 		for ( size_t dimIndex = 0; dimIndex < dims; ++dimIndex )
 			matrixes[dimIndex] = std::unique_ptr<Eigen::Matrix<double,Rows,Cols>>( new Eigen::Matrix<double,Rows,Cols>(rowCount,columnCount) );
 
-		for( size_t rowIndex = 0; rowIndex < rowCount; ++rowIndex ) 
+		for( size_t rowIndex = 0; rowIndex < rowCount; ++rowIndex )
 		{
-			for ( size_t columnIndex = 0; columnIndex < columnCount; ++columnIndex ) 
+			for ( size_t columnIndex = 0; columnIndex < columnCount; ++columnIndex )
 			{
 				for ( size_t dimIndex = 0; dimIndex < dims; ++dimIndex )
 				{
