@@ -1,5 +1,5 @@
 #pragma once
-#ifdef JDE_MATLAB_EXPORTS
+#ifdef JDE_Matlab
 	#ifdef _WINDOWS 
 		#define JDE_MATLAB_VISIBILITY __declspec( dllexport )
 	#else

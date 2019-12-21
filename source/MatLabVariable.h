@@ -169,13 +169,13 @@ namespace Jde::IO::MatLab
 	{
 		Stopwatch sw( fmt::format("StopwatchTypes::WriteFile - {}", variableName), true );
 		const int64_t columnCount = sparse.cols();
-		int* jc = static_cast<int*>( calloc(columnCount+1, sizeof(int)) );
+		mat_uint32_t* jc = static_cast<mat_uint32_t*>( calloc(columnCount+1, sizeof(mat_uint32_t)) );
 		//for( int columnIndex=0; columnIndex<columnCount; ++columnIndex )
 		//			jc[columnIndex+1] = jc[columnIndex]+sparse.innerNonZeroPtr()[columnIndex];
 		const int64_t valueCount = sparse.nonZeros();
 		DBG( "valueCount:  {}", valueCount );
 		T* values = static_cast<T*>( calloc(valueCount,sizeof(T)) );
-		int* ir = static_cast<int*>( calloc( valueCount,sizeof(int)) );
+		mat_uint32_t* ir = static_cast<mat_uint32_t*>( calloc( valueCount,sizeof(mat_uint32_t)) );
 		if( ir==nullptr )
 			THROW( Exception( "out of memory" ) );
 		auto dataIndex = 0;
