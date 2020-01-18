@@ -1,0 +1,25 @@
+Windows
+	Install HDF5
+		download cmake version from https://www.hdfgroup.org/downloads/hdf5/source-code/
+			extract & rename folder from from CMake-hdf5-1.10.6 to hdf5-1.10.6
+			using visual studio 2017 command prompt run 'build-VS2017-64.bat'
+			dll should be:  hdf5-1.10.6\build\bin\Release.
+Ubuntu
+	Install HDF5
+		download cmake version from https://www.hdfgroup.org/downloads/hdf5/source-code/
+			extract & rename folder from from CMake-hdf5-1.10.5 to hdf5-1.10.5
+			Instructions in release_docs/INSTALL_CMake.txt
+				from root hdf5-1.10.5 run `ctest -S HDF5config.cmake,BUILD_GENERATOR=Unix -C Release -VV -O hdf5.log`
+				`./HDF5-1.10.5-Linux.sh`  #should now be installed on:/home/duffyj/code/libraries/hdf5-1.10.5/HDF_Group/HDF5/1.10.5
+				#create /etc/ld.so.conf.d/user-local.conf with one line /usr/local/lib, then run sudo ldconfig
+				sudo ln -s `pwd`/HDF_Group/HDF5/1.10.5/lib/libhdf5.so.103 /usr/local/lib;
+	Install matio
+		`cd matio
+		git submodule update --init
+		./autogen.sh
+		./configure --with-zlib=$REPO_DIR/hdf5-1.10.5/HDF_Group/HDF5/1.10.5 --with-hdf5=$REPO_DIR/hdf5-1.10.5/HDF_Group/HDF5/1.10.5 --with-default-file-ver=7.3
+		make
+		make check
+		#make install copy
+		#sudo ln -s `pwd`/src/.libs/libmatio.so.10 /usr/local/lib;
+		sudo ln -s `pwd`/src/.libs/libmatio.so /usr/local/lib;

@@ -91,7 +91,7 @@ namespace Jde::IO::MatLab
 		size_t* dims = static_cast<size_t*>( malloc( 2*sizeof(size_t)) );
 		dims[0] = rowCount;
 		dims[1] = columnCount;
-		DBG( "rowCount={}, columnCount={}", rowCount, columnCount );
+		//DBG( "rowCount={}, columnCount={}", rowCount, columnCount );
 		T* values = static_cast<T*>( calloc(rowCount*columnCount, sizeof(T)) );
 		//matlab file is column major & eigen defaults to column major
 		for( uint columnIndex=0; columnIndex<columnCount; ++columnIndex )
@@ -290,7 +290,7 @@ namespace Jde::IO::MatLab
 		reserveFunction( matrix, columnCounts, int(rowCount) );
 		FileType* data = static_cast<FileType*>(sparse->data);
 		const bool testZero = zeroTest!=nullptr;
-		const size_t progressIndex = std::max(10000,sparse->nir/10);
+		const size_t progressIndex = std::max(10000u,sparse->nir/10);
 		for( auto jcIndex=1; jcIndex<sparse->njc; ++jcIndex )
 		{
 			const auto columnIndex = jcIndex-1;
@@ -319,7 +319,7 @@ namespace Jde::IO::MatLab
 		if( _pVariable->class_type==MAT_C_SPARSE )
 		{
 			const auto sparse = GetSparsePointer();
-			const size_t progressIndex = std::max( 10000, sparse->nir/10 );
+			const size_t progressIndex = std::max( 10000u, sparse->nir/10 );
 			const ScalerFrom* pData = static_cast<ScalerFrom*>( sparse->data );
 			for( auto jcIndex=1; jcIndex<sparse->njc; ++jcIndex )
 			{

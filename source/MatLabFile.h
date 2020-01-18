@@ -29,7 +29,7 @@ struct _mat_t;
 typedef struct _mat_t mat_t;
 */
 
-namespace Jde::IO::MatLab 
+namespace Jde::IO::MatLab
 {
 //	using std::vector;
 	class MatLabVariable;
@@ -55,7 +55,7 @@ namespace Jde::IO::MatLab
 
 		template<typename T, typename CharType>
 		static void LoadCsv( const std::basic_string<CharType>& csvFileName, const std::basic_string<CharType>& columnNamesToFetch, size_t maxLines );
-		
+
 
 		//template<typename T>
 		//static void Save( const string_view& fileName, const string_view& variableName, const Eigen::SparseVector<T>& sparse );
@@ -85,7 +85,7 @@ namespace Jde::IO::MatLab
 	void MatLabFile::Save( string_view pszFileName, string_view pszVariableName, const Eigen::Matrix<T, Rows, Cols>& matrix, const std::vector<string>* pColumnNames/*=nullptr*/ )
 	{
 		mat_t* pFile = Mat_CreateVer( string(pszFileName).c_str(), nullptr, MAT_FT_MAT73 );
-		if ( !pFile ) 
+		if ( !pFile )
 			THROW( Exception(fmt::format("Could not create file '{}'", pszFileName)) );
 
 		MatLabVariable::Write( pFile, pszVariableName, matrix );
@@ -99,7 +99,7 @@ namespace Jde::IO::MatLab
 	{
 		//Save( boost::locale::conv::utf_to_utf<wchar_t,char>(fileName), boost::locale::conv::utf_to_utf<wchar_t,char>(variableName), sparse );
 		mat_t* pFile = Mat_CreateVer( string(fileName).c_str(), NULL, MAT_FT_MAT73 );
-		if ( !pFile ) 
+		if ( !pFile )
 			THROW( Exception(fmt::format("Could not create file '{}'", fileName)) );
 		DBG( "Saving:  {} [{}]", fileName, variableName );
 		MatLabVariable::Write( pFile, variableName, sparse );
@@ -114,7 +114,7 @@ namespace Jde::IO::MatLab
 	//void MatLabFile::Save( const string_view& fileName, const string_view& variableName, const Eigen::SparseMatrix<T>& sparse )
 	//{
 	//	mat_t* pFile = Mat_CreateVer( boost::locale::conv::utf_to_utf<char,wchar_t>(fileName).c_str(), NULL, MAT_FT_MAT73 );
-	//	if ( !pFile ) 
+	//	if ( !pFile )
 	//		THROW( Exception(boost::wformat{L"Could not create file '%1%'"} % fileName) );
 	//	BOOST_LOG_TRIVIAL(debug) << "Saving:  " << fileName << "[" << variableName << "]" << std::endl;
 	//	MatLabVariable::Write( pFile, variableName, sparse );
@@ -125,9 +125,9 @@ namespace Jde::IO::MatLab
 	void MatLabFile::Append( string_view pszFileName, string_view pszVariableName, const Eigen::Matrix<T,Rows,Cols>& matrix )
 	{
 		mat_t* pFile = Mat_Open( string(pszFileName).c_str(), MAT_ACC_RDWR );
-		if ( !pFile ) 
+		if ( !pFile )
 			THROW( Exception(fmt::format("Could not create file '{}'", pszFileName)) );
-		DBG( "Saving:  {} [{}]", pszFileName, pszVariableName );
+		TRACE( "Saving:  {} [{}]", pszFileName, pszVariableName );
 		MatLabVariable::Write<T,Rows,Cols>( pFile, string(pszVariableName).c_str(), matrix );
 
 		Mat_Close( pFile );
@@ -137,9 +137,9 @@ namespace Jde::IO::MatLab
 	void MatLabFile::Append( string_view  pszFileName, string_view  pszVariableName, const Eigen::SparseMatrix<T>& sparse )
 	{
 		mat_t* pFile = Mat_Open( string(pszFileName).c_str(), MAT_ACC_RDWR );
-		if ( !pFile ) 
+		if ( !pFile )
 			THROW( Exception(fmt::format("Could not create file '{}'",pszFileName)) );
-		DBG( "Saving:  {} [{}]", pszFileName, pszVariableName );
+		TRACE( "Saving:  {} [{}]", pszFileName, pszVariableName );
 		MatLabVariable::Write( pFile, pszVariableName, sparse );
 
 		Mat_Close( pFile );
@@ -261,7 +261,7 @@ namespace Jde::IO::MatLab
 //		clog << "ColumnCount:  " << columnCounts.size() << endl;
 		//clog << "RowCount:  " << lineCount-1 << endl;
 
-		size_t* dims = static_cast<size_t*>( calloc( 2,sizeof(size_t)) ); 
+		size_t* dims = static_cast<size_t*>( calloc( 2,sizeof(size_t)) );
 		dims[0] = lineCount-1;
 		dims[1] = columnCounts.size();
 
@@ -269,12 +269,12 @@ namespace Jde::IO::MatLab
 		MatLabVariable matvar( variableName, MAT_C_SPARSE, dataType, 2, dims, static_cast<void*>(sparse_data), 0 );
 
 		mat_t* pFile = Mat_CreateVer( matFileName.c_str(), NULL, MAT_FT_MAT73/*MAT_FT_DEFAULT*/ );
-		if ( !pFile ) 
+		if ( !pFile )
 			THROW( Exception(fmt::format("Could not create file '{1}'", matFileName)) );
 
 		//Mat_VarWrite( pFile, _pVariable, MAT_COMPRESSION_ZLIB );
 		matvar.Write( pFile );
-		
+
 		Append( pFile, (variableName+"_columns").c_str(), columnNames, maxColumnNameLength );
 		Mat_Close( pFile );
 	}

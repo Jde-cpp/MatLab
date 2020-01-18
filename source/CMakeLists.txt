@@ -4,7 +4,9 @@ project(Jde.Mat)
 set( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../../Framework/cmake )
 include(SetUpConfigurations)
 #Custom######################################################
-include_directories( "/home/duffyj/code/libraries/eigen" )
+#message( "REPO_DIR=$ENV{REPO_DIR}" )
+include_directories( "$ENV{REPO_DIR}/matio/src" )
+include_directories( "$ENV{REPO_DIR}/eigen" )
 #############################################################
 add_library( Jde.Mat SHARED MatLabFile.cpp MatLabVariable.cpp )
 #############################################################
@@ -19,4 +21,3 @@ target_precompile_headers(Jde.Mat
 	"../../Framework/source/StringUtilities.h"
 	"../../Framework/source/io/File.h"
 )
-  
