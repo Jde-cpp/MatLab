@@ -35,7 +35,7 @@ namespace Jde::IO::MatLab
 		_file = Mat_Open( _fileName.string().c_str(), MAT_ACC_RDONLY );
 		if( _file==nullptr )
 		{
-			var error =  _logs->size()>0  ? std::get<1>( *_logs->begin() ) : std::to_string(errno); 
+			var error =  _logs->size()>0  ? std::get<1>( *_logs->begin() ) : std::to_string(errno);
 			THROW( Exception( fmt::format( "({}) Could not open file:  '{}'", error, _fileName) ) );
 			//throw std::exception( error2.c_str() );
 		}
@@ -49,7 +49,7 @@ namespace Jde::IO::MatLab
 	}
 #pragma endregion
 
-	
+
 #pragma region operator[]
 /*	MatLabVariable MatLabFile::operator[]( const wchar_t* const variableName )
 	{
@@ -65,7 +65,7 @@ namespace Jde::IO::MatLab
 			Exception exception( error );
 			THROW( exception );
 		}
-		return MatLabVariable( pVariable ); 
+		return MatLabVariable( pVariable );
 	}
 #pragma endregion
 	void MatLabFile::Logfunc( int log_level, char *message )
@@ -87,20 +87,20 @@ namespace Jde::IO::MatLab
 		mat_sparse_t* pSparse2 =  static_cast<mat_sparse_t*>(pVariable2->data);
 
 		mat_sparse_t* pCombined = static_cast<mat_sparse_t*>( calloc(1, sizeof(mat_sparse_t)) );
-		
+
 		pCombined->nir = pCombined->ndata = pCombined->nzmax = pSparse1->nzmax+pSparse2->nzmax;
-		
+
 		mat_uint32_t* pRowIndexes = static_cast<mat_uint32_t*>( calloc( pCombined->nir,sizeof(mat_uint32_t)) );
-		DBG( "pRowIndexes:  {:x}.  size:  {}", (size_t)pRowIndexes, pCombined->nir*sizeof(int) );
+		DBG( "pRowIndexes:  {:x}.  size:  {}"sv, (size_t)pRowIndexes, pCombined->nir*sizeof(int) );
 		if( pRowIndexes==nullptr )
 			THROW( Exception("out of memory") );
-		DBG( "copy to pRowIndexes:  {}", pSparse1->nir*sizeof(int) );
+		DBG( "copy to pRowIndexes:  {}"sv, pSparse1->nir*sizeof(int) );
 		std::copy( pSparse1->ir, pSparse1->ir+pSparse1->nir, pRowIndexes );
-		DBG( "pRowIndexes:  {:x}, size:  {}", (size_t)(pRowIndexes+pSparse1->nir*sizeof(int)), pSparse2->nir*sizeof(int) );
+		DBG( "pRowIndexes:  {:x}, size:  {}"sv, (size_t)(pRowIndexes+pSparse1->nir*sizeof(int)), pSparse2->nir*sizeof(int) );
 		std::copy( pSparse2->ir, pSparse2->ir+pSparse2->nir, pRowIndexes+pSparse1->nir );
 		//memcpy( static_cast<void*>(pRowIndexes+pSparse1->nir*sizeof(int)), static_cast<void*>(pSparse2->ir), pSparse2->nir*sizeof(int) );
 		pCombined->ir = pRowIndexes;
-		DBG( "first:  {}.  vs:  {}  last:  {}  vs:  {}", pRowIndexes[0], pSparse1->ir[0], pRowIndexes[pCombined->nir-1], pSparse2->ir[pSparse2->nir-1] );
+		DBG( "first:  {}.  vs:  {}  last:  {}  vs:  {}"sv, pRowIndexes[0], pSparse1->ir[0], pRowIndexes[pCombined->nir-1], pSparse2->ir[pSparse2->nir-1] );
 		//	last:   (size_t)(pRowIndexes+pSparse1->nir*sizeof(int)) << std::dec << "size:  " << pSparse2->nir*sizeof(int) << endl;
 
 		//const auto columnCount1 = pSparse1->njc-1;
@@ -110,14 +110,14 @@ namespace Jde::IO::MatLab
 		for( uint jcIndex=1; jcIndex<pSparse1->njc; ++jcIndex )
 		{
 			jc[jcIndex] = pSparse1->jc[jcIndex];
-			DBG( "jcIndex:  {} ({});  difference:  {}", jcIndex, jc[jcIndex], jc[jcIndex]-jc[jcIndex-1] );	
+			DBG( "jcIndex:  {} ({});  difference:  {}"sv, jcIndex, jc[jcIndex], jc[jcIndex]-jc[jcIndex-1] );
 		}
 
 		const auto startIndexCount=jc[pSparse1->njc-1];
 		for( uint jcIndex=1; jcIndex<pSparse2->njc; ++jcIndex )
 		{
 			jc[pSparse1->njc+jcIndex-1] = startIndexCount+pSparse2->jc[jcIndex];
-			DBG( "jcIndex:  {} ({});  difference:  {}", pSparse1->njc+jcIndex-1, jc[pSparse1->njc+jcIndex-1], jc[pSparse1->njc+jcIndex-1]-jc[pSparse1->njc+jcIndex-2] );
+			DBG( "jcIndex:  {} ({});  difference:  {}"sv, pSparse1->njc+jcIndex-1, jc[pSparse1->njc+jcIndex-1], jc[pSparse1->njc+jcIndex-1]-jc[pSparse1->njc+jcIndex-2] );
 		}
 		pCombined->jc = jc;
 
@@ -127,12 +127,12 @@ namespace Jde::IO::MatLab
 		float* pData2 = static_cast<float*>(pSparse2->data);
 		std::copy( pData2, pData2+pSparse2->ndata, pValues+pSparse1->ndata );
 		//memcpy( static_cast<void*>(values+pSparse1->ndata*sizeof(float)), static_cast<void*>(pSparse2->data), pSparse2->ndata*sizeof(float) );
-		DBG( "first:  {}.  vs:   {}.  last:  {}.  vs:  {}", pValues[0], pData1[0], pValues[pCombined->ndata-1], pData2[pSparse2->ndata-1] );
-		
+		DBG( "first:  {}.  vs:   {}.  last:  {}.  vs:  {}"sv, pValues[0], pData1[0], pValues[pCombined->ndata-1], pData2[pSparse2->ndata-1] );
+
 
 		pCombined->data = pValues;
-			
-		size_t* dims = static_cast<size_t*>( malloc( 2*sizeof(size_t)) ); 
+
+		size_t* dims = static_cast<size_t*>( malloc( 2*sizeof(size_t)) );
 		const int rowCount = int(pVariable1->dims[0]);
 		dims[0] = rowCount;
 		dims[1] = columnCount;
@@ -161,8 +161,8 @@ namespace Jde::IO::MatLab
 	void MatLabFile::Append( string_view pszFileName, string_view pszVariableName, const std::vector<string>& columnNames )
 	{
 		mat_t* pFile = Mat_Open( string(pszFileName).c_str(), MAT_ACC_RDWR );
-		if ( !pFile ) 
-			THROW( Exception(fmt::format("Could not create file '{}'", pszFileName)) );
+		if ( !pFile )
+			THROW( Exception("Could not create file '{}'"sv, pszFileName) );
 		Append( pFile, pszVariableName, columnNames );
 		Mat_Close( pFile );
 	}

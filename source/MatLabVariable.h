@@ -173,7 +173,7 @@ namespace Jde::IO::MatLab
 		//for( int columnIndex=0; columnIndex<columnCount; ++columnIndex )
 		//			jc[columnIndex+1] = jc[columnIndex]+sparse.innerNonZeroPtr()[columnIndex];
 		const int64_t valueCount = sparse.nonZeros();
-		DBG( "valueCount:  {}", valueCount );
+		DBG( "valueCount:  {}"sv, valueCount );
 		T* values = static_cast<T*>( calloc(valueCount,sizeof(T)) );
 		mat_uint32_t* ir = static_cast<mat_uint32_t*>( calloc( valueCount,sizeof(mat_uint32_t)) );
 		if( ir==nullptr )
@@ -194,7 +194,7 @@ namespace Jde::IO::MatLab
 			*/
 		}
 		assert( dataIndex==valueCount );
-		DBG( "dataIndex:  {}.", dataIndex );
+		DBG( "dataIndex:  {}."sv, dataIndex );
 		mat_sparse_t* sparse_data = static_cast<mat_sparse_t*>( calloc(1, sizeof(mat_sparse_t)) );
 		sparse_data->nir = sparse_data->ndata = sparse_data->nzmax = static_cast<int>( valueCount );
 		sparse_data->ir = ir;

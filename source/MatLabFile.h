@@ -127,7 +127,7 @@ namespace Jde::IO::MatLab
 		mat_t* pFile = Mat_Open( string(pszFileName).c_str(), MAT_ACC_RDWR );
 		if ( !pFile )
 			THROW( Exception(fmt::format("Could not create file '{}'", pszFileName)) );
-		TRACE( "Saving:  {} [{}]", pszFileName, pszVariableName );
+		TRACE( "Saving:  {} [{}]"sv, pszFileName, pszVariableName );
 		MatLabVariable::Write<T,Rows,Cols>( pFile, string(pszVariableName).c_str(), matrix );
 
 		Mat_Close( pFile );
