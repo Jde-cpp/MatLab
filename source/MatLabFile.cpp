@@ -23,7 +23,7 @@ namespace Jde::IO::MatLab
 		//auto error = boost::str( boost::format{"(%1%) Could not open file:  '%2%'"} % 5 % "foo" );
 		//auto error = boost::str( boost::format{"%2%/%1%/%3%"} % 12 % 5 % 2014 );
 		if( _fileName.string().size()==0 )
-			THROW( Exception("matlabFileName is empty") );
+			THROW( Exception("matlabFileName is empty"sv) );
 		_lock->lock();
 		if( _logs==nullptr )
 		{
@@ -36,7 +36,7 @@ namespace Jde::IO::MatLab
 		if( _file==nullptr )
 		{
 			var error =  _logs->size()>0  ? std::get<1>( *_logs->begin() ) : std::to_string(errno);
-			THROW( Exception( fmt::format( "({}) Could not open file:  '{}'", error, _fileName) ) );
+			THROW( Exception( "({}) Could not open file:  '{}'"sv, error, _fileName) );
 			//throw std::exception( error2.c_str() );
 		}
 		_lock->unlock();
@@ -60,11 +60,7 @@ namespace Jde::IO::MatLab
 		//Stopwatch sw( StopwatchTypes::ReadFile, variableName, true );
 		matvar_t* pVariable = Mat_VarRead( _file, string(variableName).c_str() );
 		if( !pVariable )
-		{
-			var error = fmt::format( "Could not find variable '{}' in file '{}'", variableName, _fileName );
-			Exception exception( error );
-			THROW( exception );
-		}
+			THROW( Exception("Could not find variable '{}' in file '{}'"sv, variableName, _fileName) );
 		return MatLabVariable( pVariable );
 	}
 #pragma endregion
@@ -80,7 +76,7 @@ namespace Jde::IO::MatLab
 		matvar_t* pVariable1 = v1._pVariable;
 		//const size_t stride = Mat_SizeOf( pVariable1->data_type );
 		if( pVariable1->class_type!=MAT_C_SPARSE )
-			THROW( Exception("class_type!=MAT_C_SPARSE") );
+			THROW( Exception("class_type!=MAT_C_SPARSE"sv) );
 		matvar_t* pVariable2 = v2._pVariable;
 
 		mat_sparse_t* pSparse1 =  static_cast<mat_sparse_t*>(pVariable1->data);
@@ -93,7 +89,7 @@ namespace Jde::IO::MatLab
 		mat_uint32_t* pRowIndexes = static_cast<mat_uint32_t*>( calloc( pCombined->nir,sizeof(mat_uint32_t)) );
 		DBG( "pRowIndexes:  {:x}.  size:  {}"sv, (size_t)pRowIndexes, pCombined->nir*sizeof(int) );
 		if( pRowIndexes==nullptr )
-			THROW( Exception("out of memory") );
+			THROW( Exception("out of memory"sv) );
 		DBG( "copy to pRowIndexes:  {}"sv, pSparse1->nir*sizeof(int) );
 		std::copy( pSparse1->ir, pSparse1->ir+pSparse1->nir, pRowIndexes );
 		DBG( "pRowIndexes:  {:x}, size:  {}"sv, (size_t)(pRowIndexes+pSparse1->nir*sizeof(int)), pSparse2->nir*sizeof(int) );

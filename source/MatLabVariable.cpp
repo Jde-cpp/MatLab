@@ -156,7 +156,7 @@ namespace Jde::IO::MatLab
 		else if( typeInfo==typeid(size_t) )
 			dataType = matio_types::MAT_T_UINT64;
 		else if( typeInfo!=typeid(double) )
-			THROW( Exception( fmt::format( "Datatype '{}' has not been implemented.", typeInfo.name())) );
+			THROW( Exception( "Datatype '{}' has not been implemented."sv, typeInfo.name()) );
 		return dataType;
 	}
 	matio_classes MatLabVariable::GetMatioClass( const std::type_info& typeInfo )noexcept(false)
@@ -169,14 +169,14 @@ namespace Jde::IO::MatLab
 		else if( typeInfo==typeid(size_t) )
 			classType = matio_classes::MAT_C_UINT64;
 		else if( typeInfo!=typeid(double) )
-			THROW( Exception(fmt::format("class '{}' has not been implemented.", typeInfo.name())) );
+			THROW( Exception("class '{}' has not been implemented."sv, typeInfo.name()) );
 		return classType;
 	}
 #pragma endregion
 	const mat_sparse_t* MatLabVariable::GetSparsePointer()const noexcept(false)
 	{
 		if( _pVariable->class_type!=MAT_C_SPARSE )
-			THROW( Exception( "class_type!=MAT_C_SPARSE") );
+			THROW( Exception( "class_type!=MAT_C_SPARSE"sv) );
 		return static_cast<mat_sparse_t*>(_pVariable->data);
 	}
 
