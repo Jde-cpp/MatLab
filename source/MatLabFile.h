@@ -200,7 +200,7 @@ namespace Jde::IO::MatLab
 
 		T* values = static_cast<T*>( calloc(valueCount, sizeof(T)) );
 		int lineIndex=0;
-		int* ir = static_cast<int*>( calloc( valueCount, sizeof(int)) );
+		auto ir = static_cast<mat_uint32_t*>( calloc( valueCount, sizeof(mat_uint32_t)) );
 
 		//size_t maxDataIndex = numeric_limits<size_t>::min();
 		//size_t minDataIndex = numeric_limits<size_t>::max();
@@ -242,7 +242,7 @@ namespace Jde::IO::MatLab
 
 		sw2.Finish();
 		Stopwatch sw3( StopwatchTypes::WriteFile, variableName.c_str(), true );
-		int* jc = static_cast<int*>( calloc((columnCounts.size()+1),sizeof(int)) );
+		auto jc = static_cast<mat_uint32_t*>( calloc((columnCounts.size()+1),sizeof(mat_uint32_t)) );
 		jc[0] = 0;
 		for( int columnIndex=0; columnIndex<columnCounts.size(); ++columnIndex )
 			jc[columnIndex+1] = jc[columnIndex]+columnCounts[columnIndex];

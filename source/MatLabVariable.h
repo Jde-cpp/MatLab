@@ -107,14 +107,14 @@ namespace Jde::IO::MatLab
 	template<typename T>
 	void MatLabVariable::Write( mat_t* pFile, string_view variableName, const Eigen::SparseVector<T>& sparse )
 	{
-		Stopwatch sw( StopwatchTypes::WriteFile, variableName, true );
+		Stopwatch sw( variableName );
 		const auto columnCount = sparse.cols();
-		int* jc = static_cast<int*>( calloc(2, sizeof(int)) );
+		auto jc = static_cast<mat_uint32_t*>( calloc(2, sizeof(mat_uint32_t)) );
 		const auto valueCount = sparse.nonZeros();
 		jc[1] = valueCount;
 		//std::clog << "valueCount:  " << valueCount << ".  rows:  " << sparse.rows() << endl;
 		T* values = static_cast<T*>( calloc(valueCount,sizeof(T)) );
-		int* ir = static_cast<int*>( calloc( valueCount,sizeof(int)) );
+		auto ir = static_cast<mat_uint32_t*>( calloc( valueCount,sizeof(mat_uint32_t)) );
 		if( ir==nullptr )
 			THROW( Exception( "out of memory" ) );
 		auto dataIndex = 0;
@@ -249,9 +249,9 @@ namespace Jde::IO::MatLab
 	template<typename Result,typename Scaler,typename FileType>
 	std::unique_ptr<Result> MatLabVariable::ToSparse(const Scaler* zeroTest, const Scaler* zeroValue, const std::function<void(Result*,const Eigen::VectorXi&,int)>& reserveFunction, size_t maxRowCount )const
 	{
-		Stopwatch sw( StopwatchTypes::ReadFile, _name.c_str(), true );
+		Stopwatch sw( _name );
 		auto pVariable = GetVariable();
-		const size_t stride = Mat_SizeOf( pVariable->data_type );
+		//const size_t stride = Mat_SizeOf( pVariable->data_type );
 		if( pVariable->class_type!=MAT_C_SPARSE )
 			THROW( Exception("class_type!=MAT_C_SPARSE") );
 
@@ -337,7 +337,7 @@ namespace Jde::IO::MatLab
 		else
 		{
 			auto pVariable = GetVariable();
-			const size_t dims =  pVariable->dims[2];
+			//const size_t dims =  pVariable->dims[2];
 			const size_t rowCount =  rows();
 			const size_t columnCount =  cols();
 			const size_t stride = Mat_SizeOf( _pVariable->data_type );
