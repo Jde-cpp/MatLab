@@ -2,33 +2,13 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <mutex>
 
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
-#include "Exports.h"
-//#include <matio.h>
+#include "./Exports.h"
 
 #include "MatLabVariable.h"
-//#include "../../../log/Logging.h"
-//#include "../../../Exception.h"
-//#include "../../../Stopwatch.h"
-
-//#undef max
-namespace std{
-	class mutex;
-	//class list;
-	//class tuple;
-}
-/*
-struct matvar_t;
-
-struct _mat_t;
-/ ** @brief Matlab MAT File information
-* Contains information about a Matlab MAT file
-* @ingroup MAT
-/
-typedef struct _mat_t mat_t;
-*/
 
 namespace Jde::IO::MatLab
 {
